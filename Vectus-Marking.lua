@@ -39,21 +39,20 @@ function VA.OnEvent(frame, event, ...)
 				
 				if cur ~= true then
 					SetRaidTarget(groups[i][1], mark[group]);
-					-- use a while loop so you can do any number per group and remove each 1 untill it has no 1
 					-- break the loop once no groups have a [1] value
-					-- if [0] doesnt belong in this group and their is a [1] in this group switch them and move the other
+					-- if [0] doesn't belong in this group and their is a [1] in this group switch them and move the other
 					-- if they both belong to the group move the new one
 					while true do
 						if groups[1][2] ~= nil then
-							if groups[1][2]
+							sort(1);
 						elseif groups[2][2] ~= nil then
-							
+							sort(2);
 						elseif groups[3][2] ~= nil then
-							
+							sort(3);
 						elseif groups[4][2] ~= nil then
-						
+							sort(4);
 						else
-						break
+							break
 						end
 					end
 				end
@@ -93,6 +92,29 @@ VA.f:RegisterEvent("PLAYER_LOGIN")
 VA.f:RegisterEvent("UNIT_AURA");
 VA.f:RegisterEvent("GROUP_ROSTER_UPDATE");
 
+function Unit_ID(grp)
+	if Raid_Info[groups[grp][2]] == Raid_Info[groups[grp][1] then
+		for i = 1, 4 do
+			if groups[i][1] == nil then
+				groups[i][1] = groups[grp][2]];
+				table.remove(groups[grp], 2)
+				break
+			end
+		end
+	else
+		if [Raid_Info[groups[grp][1]] ~= grp]
+			local tmp = groups[grp][2]
+			groups[grp][2] = groups[grp][1]
+			groups[grp][1]
+		else
+			if groups[i][1] == nil then
+				groups[i][1] = groups[grp][2]];
+				break
+			end
+		end
+	end
+end
+
 function Unit_ID()
 	raiders = table.wipe(raiders);
 
@@ -107,4 +129,3 @@ function Unit_ID()
 		end
 	end
 end
-
