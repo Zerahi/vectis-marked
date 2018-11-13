@@ -25,38 +25,38 @@ function VA.OnEvent(frame, event, ...)
 		local group = Raid_Info[UnitName(sel)];
 		if group ~= nil then
 			local cur = false;
-			for i = 1, 4 do
-				if groups[i][1] ~= nil then
-					if AuraUtil.FindAuraByName(BUFF, groups[i][1]) == nil then
-						SetRaidTarget(groups[i][1], 0);
-						groups[i][1] = nil;
+				for i = 1, 4 do
+					if groups[i][1] ~= nil then
+						if AuraUtil.FindAuraByName(BUFF, groups[i][1]) == nil then
+							SetRaidTarget(groups[i][1], 0);
+							groups[i][1] = nil;
+						end
 					end
-				elseif groups[i][1] == sel then
-					cur = true;
+					if groups[i][1] == sel then
+						cur = true;
+					end
 				end
-			end
-				
-			if cur ~= true then
-				local name = AuraUtil.FindAuraByName(BUFF, sel)
-				if name ~= nil then
+			local name = AuraUtil.FindAuraByName(BUFF, sel)
+			if name ~= nil then
+				if cur ~= true then
 					table.insert(groups[group], sel)
-					while true do
-						if groups[1][2] ~= nil then
-							srt(1);
-						elseif groups[2][2] ~= nil then
-							srt(2);
-						elseif groups[3][2] ~= nil then
-							srt(3);
-						elseif groups[4][2] ~= nil then
-							srt(4);
-						else
-							break
-						end
+				end
+				while true do
+					if groups[1][2] ~= nil then
+						srt(1);
+					elseif groups[2][2] ~= nil then
+						srt(2);
+					elseif groups[3][2] ~= nil then
+						srt(3);
+					elseif groups[4][2] ~= nil then
+						srt(4);
+					else
+						break
 					end
-					for i = 1, 4 do
-						if groups[i][1] ~= nil then
-							SetRaidTarget(groups[i][1], mark[i]);
-						end
+				end
+				for i = 1, 4 do
+					if groups[i][1] ~= nil then
+						SetRaidTarget(groups[i][1], mark[i]);
 					end
 				end
 			end
