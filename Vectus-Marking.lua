@@ -24,64 +24,40 @@ function VA.OnEvent(frame, event, ...)
 		local sel = UnitName(select(1, ...));
 		local group = Raid_Info[UnitName(sel)];
 		if group ~= nil then
-			local name = AuraUtil.FindAuraByName(BUFF, sel)
-			if name ~= nil then
-				local cur = false;
-				for i = 1, 4 do
-					if groups[i][1] ~= nil then
-						if AuraUtil.FindAuraByName(BUFF, groups[i][1]) == nil then
-							SetRaidTarget(groups[i][1], 0);
-							groups[i][1] = nil;
-						end
+			local cur = false;
+			for i = 1, 4 do
+				if groups[i][1] ~= nil then
+					if AuraUtil.FindAuraByName(BUFF, groups[i][1]) == nil then
+						SetRaidTarget(groups[i][1], 0);
+						groups[i][1] = nil;
 					end
-					if groups[i][1] ~= sel then cur = true;
+				elseif groups[i][1] == sel then
+					cur = true;
 				end
+			end
 				
-				if cur ~= true then
-					SetRaidTarget(groups[i][1], mark[group]);
-					-- break the loop once no groups have a [1] value
-					-- if [0] doesn't belong in this group and their is a [1] in this group switch them and move the other
-					-- if they both belong to the group move the new one
+			if cur ~= true then
+				local name = AuraUtil.FindAuraByName(BUFF, sel)
+				if name ~= nil then
+					table.insert(groups[group], sel)
 					while true do
 						if groups[1][2] ~= nil then
-							sort(1);
+							srt(1);
 						elseif groups[2][2] ~= nil then
-							sort(2);
+							srt(2);
 						elseif groups[3][2] ~= nil then
-							sort(3);
+							srt(3);
 						elseif groups[4][2] ~= nil then
-							sort(4);
+							srt(4);
 						else
 							break
 						end
 					end
-				end
-					--[[if groupMarks[group] == nil then
-						if groupMarks[sel] ~= nil then
-							groupMarks[sel] = nil;
+					for i = 1, 4 do
+						if groups[i][1] ~= nil then
+							SetRaidTarget(groups[i][1], mark[i]);
 						end
-						groupMarks[group] = sel;
-						SetRaidTarget(sel, mark[group]);
-						print(mark[group]);
-					elseif Raid_Info[groupMarks[group] ~= group then
-						table.insert(missed, groupMarks[group]);
-						groupMarks[group] = sel;
-						SetRaidTarget(sel, mark[group]);
-					else
-						table.insert(missed, sel);
 					end
-					if missed[1] ~= nil then
-						for i = 1, 4 do
-							if groupMarks[i] == nil then
-								groupMarks[i] = missed[1];
-								print(groupMarks[i])
-								print(mark[i])
-								SetRaidTarget(groupMarks[i], mark[i]);
-								table.remove(missed, 1)
-								break
-							end
-						end
-					end]]--
 				end
 			end
 		end
@@ -92,24 +68,27 @@ VA.f:RegisterEvent("PLAYER_LOGIN")
 VA.f:RegisterEvent("UNIT_AURA");
 VA.f:RegisterEvent("GROUP_ROSTER_UPDATE");
 
-function Unit_ID(grp)
-	if Raid_Info[groups[grp][2]] == Raid_Info[groups[grp][1] then
+function srt(grp)
+	if Raid_Info[groups[grp][2]] == Raid_Info[groups[grp][1]] then
 		for i = 1, 4 do
 			if groups[i][1] == nil then
-				groups[i][1] = groups[grp][2]];
+				groups[i][1] = groups[grp][2];
 				table.remove(groups[grp], 2)
 				break
 			end
 		end
 	else
-		if [Raid_Info[groups[grp][1]] ~= grp]
+		if Raid_Info[groups[grp][1]] ~= grp then
 			local tmp = groups[grp][2]
 			groups[grp][2] = groups[grp][1]
-			groups[grp][1]
+			groups[grp][1] = tmp
 		else
-			if groups[i][1] == nil then
-				groups[i][1] = groups[grp][2]];
-				break
+			for i = 1, 4 do
+				if groups[i][1] == nil then
+					groups[i][1] = groups[grp][2];
+					table.remove(groups[grp], 2)
+					break
+				end
 			end
 		end
 	end
