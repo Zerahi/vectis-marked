@@ -1,12 +1,8 @@
----do combat log instead, gather group info with tank spec people
---mark people based on group, from combat log buff once four buffs, go out each cycle
--- add,warning if same person gets 2
--- auto assign group color initially, add config later
 local addonName, VA = ...;
 
 
 VA.f = CreateFrame("Frame", "CAmain", UIParent, "")
-local BUFF = "Unending Breath"
+local BUFF = "Omega Vector"
 local raiders = { };
 local Raid_Info = { };
 local group1 = { };
@@ -25,38 +21,38 @@ function VA.OnEvent(frame, event, ...)
 		local group = Raid_Info[UnitName(sel)];
 		if group ~= nil then
 			local cur = false;
-				for i = 1, 4 do
-					if groups[i][1] ~= nil then
-						if AuraUtil.FindAuraByName(BUFF, groups[i][1]) == nil then
-							SetRaidTarget(groups[i][1], 0);
-							groups[i][1] = nil;
-						end
-					end
-					if groups[i][1] == sel then
-						cur = true;
+			for i = 1, 4 do
+				if groups[i][1] ~= nil then
+					if AuraUtil.FindAuraByName(BUFF, groups[i][1], "HARMFUL") == nil then
+						SetRaidTarget(groups[i][1], 0);
+						groups[i][1] = nil;
 					end
 				end
-			local name = AuraUtil.FindAuraByName(BUFF, sel)
+				if groups[i][1] == sel then
+					cur = true;
+				end
+			end
+			local name = AuraUtil.FindAuraByName(BUFF, sel, "HARMFUL")
 			if name ~= nil then
 				if cur ~= true then
 					table.insert(groups[group], sel)
-				end
-				while true do
-					if groups[1][2] ~= nil then
-						srt(1);
-					elseif groups[2][2] ~= nil then
-						srt(2);
-					elseif groups[3][2] ~= nil then
-						srt(3);
-					elseif groups[4][2] ~= nil then
-						srt(4);
-					else
-						break
+					while true do
+						if groups[1][2] ~= nil then
+							srt(1);
+						elseif groups[2][2] ~= nil then
+							srt(2);
+						elseif groups[3][2] ~= nil then
+							srt(3);
+						elseif groups[4][2] ~= nil then
+							srt(4);
+						else
+							break
+						end
 					end
-				end
-				for i = 1, 4 do
-					if groups[i][1] ~= nil then
-						SetRaidTarget(groups[i][1], mark[i]);
+					for i = 1, 4 do
+						if groups[i][1] ~= nil then
+							SetRaidTarget(groups[i][1], mark[i]);
+						end
 					end
 				end
 			end
@@ -64,7 +60,7 @@ function VA.OnEvent(frame, event, ...)
 	end
 end
 VA.f:SetScript( "OnEvent", VA.OnEvent)
-VA.f:RegisterEvent("PLAYER_LOGIN")
+VA.f:RegisterEvent("PLAYER_LOGIN");
 VA.f:RegisterEvent("UNIT_AURA");
 VA.f:RegisterEvent("GROUP_ROSTER_UPDATE");
 
